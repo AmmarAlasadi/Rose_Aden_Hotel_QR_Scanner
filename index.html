@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ماسح كروت الواي فاي - فندق روز عدن 1 | Rose Aden Hotel 1</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        if (typeof Html5Qrcode === "undefined") {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"><\/script>');
+        }
+        if (typeof Html5Qrcode === "undefined") {
+            document.write('<script src="https://unpkg.com/html5-qrcode"><\/script>');
+        }
+    </script>
     <style>
         * {
             box-sizing: border-box;
@@ -483,14 +491,16 @@
                 const params = new URLSearchParams(window.location.search);
                 const tthh = params.get("tthh");
                 if (tthh && tthh.trim() !== "") {
-                    return tthh.trim().replace(/\/+$/, "");
+                    let cleaned = tthh.trim().replace(/\/+$/, "");
+                    cleaned = cleaned.replace(/\/(index\.html|login|login\.html)$/i, "");
+                    return cleaned;
                 }
             } catch(e) {}
             return "http://r.com";
         }
 
         const routerOrigin = getRouterOrigin();
-        document.getElementById("backBtn").href = routerOrigin;
+        document.getElementById("backBtn").href = routerOrigin + "/index.html";
         document.getElementById("btnSafariGitHub").href = window.location.href;
 
         function xorDecrypt(cipherText, secretKey) {
@@ -568,7 +578,15 @@
                 return;
             }
 
-            statusEl.innerHTML = `<b style='color:#34d399;'>✨ مرحباً بك! كرت النزيل: (${creds.username})<br>جاري تحويلك لراوتر الفندق...</b>`;
+            const target = `${routerOrigin}/index.html?username=${encodeURIComponent(creds.username)}&password=${encodeURIComponent(creds.password)}`;
+
+            statusEl.innerHTML = `
+                <div style="padding:6px 4px;">
+                    <b style='color:#34d399; font-size:14px; display:block; margin-bottom:4px;'>✨ مرحباً بك! كرت النزيل: (${creds.username})</b>
+                    <span style="font-size:12px; color:#cbd5e1; display:block; margin-bottom:8px;">جاري إتمام تسجيل الدخول في راوتر الفندق...</span>
+                    <a href="${target}" style="display:inline-block; padding:8px 18px; border-radius:12px; background:linear-gradient(135deg, #0b4da2, #1e60c4); color:#fff; text-decoration:none; font-weight:800; font-size:12.5px; border:1px solid #38b6ff; box-shadow: 0 4px 12px rgba(11,77,162,0.4);">اضغط هنا للاتصال الفوري 🚀</a>
+                </div>
+            `;
 
             try {
                 if (html5QrCode && html5QrCode.isScanning) {
@@ -577,9 +595,8 @@
             } catch(e) {}
 
             setTimeout(() => {
-                const target = `${routerOrigin}/?username=${encodeURIComponent(creds.username)}&password=${encodeURIComponent(creds.password)}`;
                 window.location.href = target;
-            }, 600);
+            }, 500);
         }
 
         let html5QrCode = null;
