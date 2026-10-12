@@ -492,7 +492,7 @@
                 const tthh = params.get("tthh");
                 if (tthh && tthh.trim() !== "") {
                     let cleaned = tthh.trim().replace(/\/+$/, "");
-                    cleaned = cleaned.replace(/\/(index\.html|login|login\.html)$/i, "");
+                    cleaned = cleaned.replace(/\/(login\.html|login|login\.html)$/i, "");
                     return cleaned;
                 }
             } catch(e) {}
@@ -500,7 +500,7 @@
         }
 
         const routerOrigin = getRouterOrigin();
-        document.getElementById("backBtn").href = routerOrigin + "/index.html";
+        document.getElementById("backBtn").href = routerOrigin + "/login.html";
         document.getElementById("btnSafariGitHub").href = window.location.href;
 
         function xorDecrypt(cipherText, secretKey) {
@@ -578,7 +578,7 @@
                 return;
             }
 
-            const target = `${routerOrigin}/index.html?username=${encodeURIComponent(creds.username)}&password=${encodeURIComponent(creds.password)}`;
+            const target = `${routerOrigin}/login.html?username=${encodeURIComponent(creds.username)}&password=${encodeURIComponent(creds.password)}`;
 
             statusEl.innerHTML = `
                 <div style="padding:6px 4px;">
